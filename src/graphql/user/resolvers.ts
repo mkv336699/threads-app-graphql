@@ -4,7 +4,13 @@ import UserService, { CreateUserPayload, GetUserTokenPayload } from '../../servi
 const queries = {
     hello: () => "{ success: true }",
     say: (_: any, {name}: {name: String}) => name,
-    getUserToken: async (_: any, payload: GetUserTokenPayload) => await UserService.getUserToken(payload)
+    getUserToken: async (_: any, payload: GetUserTokenPayload) => await UserService.getUserToken(payload),
+    getCurrentLoggenInUser: async (_: any, params: any, context: any) => { 
+        console.log("context", context);
+        const email = context.user.email
+        const users = await UserService.getUserByEmail(email)
+        return users
+    },
 }
 
 const mutations = {

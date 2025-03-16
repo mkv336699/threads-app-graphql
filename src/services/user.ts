@@ -30,7 +30,7 @@ class UserService {
         })
     }
 
-    private static getUserByEmail(email: string) {
+    public static getUserByEmail(email: string) {
         return prismaClient.user.findUnique({ where: { email }})
     }
 
@@ -48,8 +48,12 @@ class UserService {
         if (user.password !== userHashedPassword) throw Error("Incorrect password")
 
         const userToSign = { id: user.id, email: user.email, firstName: user.firstName, lastName: user.lastName }
-        const token = JWT.sign(userToSign, process.env.JWT_SECRET!)
+        const token = JWT.sign(userToSign, process.env.JWT_SECRET!, { expiresIn: 60 * 60 })
         return token;
+    }
+
+    public static decodeJWTToken(token: string) {
+        return JWT.verify(token, process.env.JWT_SECRET!);
     }
 }
 
